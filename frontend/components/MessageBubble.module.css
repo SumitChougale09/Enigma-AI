@@ -1,0 +1,156 @@
+.message {
+  display: flex;
+  gap: 12px;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.userMessage {
+  justify-content: flex-end;
+}
+.assistantMessage {
+  justify-content: flex-start;
+}
+
+.assistantIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-subtle);
+  border: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bubble {
+  max-width: 720px;
+  min-width: 0;
+}
+
+.userMessage .bubble {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 4px var(--radius-lg);
+  padding: 12px 16px;
+}
+.userMessage .content p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.assistantMessage .bubble {
+  flex: 1;
+}
+
+/* Content */
+.content {
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.content h1, .content h2, .content h3 {
+  margin-top: 0.8em;
+  margin-bottom: 0.3em;
+  font-weight: 600;
+}
+.content h1 { font-size: 1.15em; }
+.content h2 { font-size: 1.05em; }
+.content h3 { font-size: 0.98em; }
+.content p {
+  margin-bottom: 0.5em;
+}
+.content li {
+  margin-left: 1.2em;
+  margin-bottom: 0.25em;
+  list-style: disc;
+}
+
+.inlineCode {
+  background: var(--bg-tertiary);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.codeBlock {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 8px 0;
+  font-size: 0.85rem;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+.citation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--radius-full);
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 0.6rem;
+  font-weight: 700;
+  margin: 0 1px;
+  cursor: pointer;
+  vertical-align: super;
+  transition: background 0.15s;
+}
+.citation:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Status */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  animation: fadeIn 0.3s ease;
+}
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Typing dots */
+.typingDots {
+  display: flex;
+  gap: 4px;
+  padding: 8px 0;
+}
+.typingDots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: typing-dot 1.4s ease-in-out infinite;
+}
+.typingDots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typingDots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@media (max-width: 768px) {
+  .message {
+    padding: 12px 16px;
+  }
+}

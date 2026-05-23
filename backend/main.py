@@ -33,6 +33,7 @@ from tools.search import search_web
 from core.context_builder import build_context
 from core.formatter import format_response_with_citations
 from llm.generate import generate_answer, generate_answer_stream
+from routes import router as app_router
 
 # ─── FastAPI App ──────────────────────────────────────────────
 
@@ -49,6 +50,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(app_router)
 
 
 # ─── Request / Response Models ────────────────────────────────
