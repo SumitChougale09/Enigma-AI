@@ -30,7 +30,11 @@ export default function LoginPage() {
             data: { full_name: fullName },
           },
         });
-        if (signUpError) throw signUpError;
+        if (signUpError) {
+          setError(signUpError.message);
+          setLoading(false);
+          return;
+        }
         setSuccess("Account created! Check your email to confirm, or sign in if auto-confirm is enabled.");
         setMode("login");
       } else {
@@ -38,7 +42,11 @@ export default function LoginPage() {
           email,
           password,
         });
-        if (signInError) throw signInError;
+        if (signInError) {
+          setError(signInError.message);
+          setLoading(false);
+          return;
+        }
         router.replace("/chat");
       }
     } catch (err) {

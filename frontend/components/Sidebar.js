@@ -9,10 +9,12 @@ export default function Sidebar({
   user,
   onNewChat,
   onSelectChat,
+  onDeleteChat,
   onLogout,
 }) {
   const [search, setSearch] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const [hoveredChat, setHoveredChat] = useState(null);
 
   const filtered = chats.filter((c) =>
     c.title.toLowerCase().includes(search.toLowerCase())
@@ -93,20 +95,43 @@ export default function Sidebar({
                 <div key={label} className={styles.group}>
                   <p className={styles.groupLabel}>{label}</p>
                   {items.map((chat) => (
-                    <button
+                    <div
                       key={chat.id}
                       className={`${styles.chatItem} ${chat.id === activeChatId ? styles.chatItemActive : ""}`}
-                      onClick={() => {
-                        onSelectChat(chat.id);
-                        setCollapsed(false);
-                      }}
-                      title={chat.title}
+                      onMouseEnter={() => setHoveredChat(chat.id)}
+                      onMouseLeave={() => setHoveredChat(null)}
                     >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.chatIcon}>
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                      <span className={styles.chatTitle}>{chat.title}</span>
-                    </button>
+                      <button
+                        className={styles.chatButton}
+                        onClick={() => {
+                          onSelectChat(chat.id);
+                          setCollapsed(false);
+                        }}
+                        title={chat.title}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={styles.chatIcon}>
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <span className={styles.chatTitleText}>{chat.title}</span>
+                      </button>
+
+                      {/* Delete button (visible on hover) */}
+                      {(hoveredChat === chat.id || chat.id === activeChatId) && onDeleteChat && (
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteChat(chat.id);
+                          }}
+                          title="Delete chat"
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
               )

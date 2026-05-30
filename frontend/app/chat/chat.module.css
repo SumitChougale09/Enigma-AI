@@ -15,6 +15,25 @@
   min-width: 0;
 }
 
+/* Chat Header */
+.chatHeader {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--surface-border);
+  background: var(--bg-secondary);
+  min-height: 48px;
+}
+.chatTitle {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* Loading */
 .loadingScreen {
   height: 100vh;
@@ -27,9 +46,21 @@
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
+.loadingLogo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  background: var(--gradient-subtle);
+  border: 1px solid var(--surface-border);
+  margin-bottom: 8px;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
 .loadingSpinner {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: 3px solid var(--surface-border);
   border-top-color: var(--accent);
   border-radius: 50%;
@@ -48,14 +79,14 @@
 .emptyInner {
   text-align: center;
   animation: fadeInUp 0.5s ease-out;
-  max-width: 540px;
+  max-width: 600px;
 }
 .emptyLogo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: 88px;
+  height: 88px;
   border-radius: var(--radius-xl);
   background: var(--gradient-subtle);
   border: 1px solid var(--surface-border);
@@ -81,6 +112,9 @@
   justify-content: center;
 }
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 10px 18px;
   background: var(--surface);
   border: 1px solid var(--surface-border);
@@ -96,7 +130,15 @@
   border-color: var(--accent);
   color: var(--text-primary);
   background: var(--surface-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(32, 178, 170, 0.15);
+}
+.chipIcon {
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+.chip:hover .chipIcon {
+  opacity: 1;
 }
 
 /* Messages */
@@ -125,5 +167,8 @@
   }
   .mainContent {
     padding-top: 52px; /* Space for mobile toggle */
+  }
+  .chatHeader {
+    padding-left: 60px; /* Space for hamburger button */
   }
 }

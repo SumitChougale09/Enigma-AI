@@ -144,22 +144,31 @@ function formatInline(text) {
 
 export default function MessageBubble({ message }) {
   const isUser = message.role === "user";
+  const isError = message.isError;
 
   return (
     <div className={`${styles.message} ${isUser ? styles.userMessage : styles.assistantMessage} animate-fade-in`}>
       {!isUser && (
-        <div className={styles.assistantIcon}>
-          <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="14" stroke="url(#msg-lg)" strokeWidth="2" />
-            <path d="M10 20L16 10L22 20" stroke="url(#msg-lg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx="16" cy="14" r="2" fill="url(#msg-lg)" />
-            <defs>
-              <linearGradient id="msg-lg" x1="0" y1="0" x2="32" y2="32">
-                <stop stopColor="#20B2AA" />
-                <stop offset="1" stopColor="#5B8DEF" />
-              </linearGradient>
-            </defs>
-          </svg>
+        <div className={`${styles.assistantIcon} ${isError ? styles.errorIcon : ""}`}>
+          {isError ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="14" stroke="url(#msg-lg)" strokeWidth="2" />
+              <path d="M10 20L16 10L22 20" stroke="url(#msg-lg)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="16" cy="14" r="2" fill="url(#msg-lg)" />
+              <defs>
+                <linearGradient id="msg-lg" x1="0" y1="0" x2="32" y2="32">
+                  <stop stopColor="#20B2AA" />
+                  <stop offset="1" stopColor="#5B8DEF" />
+                </linearGradient>
+              </defs>
+            </svg>
+          )}
         </div>
       )}
 
@@ -179,13 +188,18 @@ export default function MessageBubble({ message }) {
 
         {/* Content */}
         {message.content && (
-          <div className={`${styles.content} markdown-content`}>
+          <div className={`${styles.content} ${isError ? styles.errorContent : ""} markdown-content`}>
             {renderContent(message.content)}
           </div>
         )}
 
-        {/* Streaming indicator */}
-        {message.streaming && (
+        {/* Streaming cursor */}
+        {message.streaming && message.content && (
+          <span className={styles.streamCursor} />
+        )}
+
+        {/* Streaming indicator (when no content yet) */}
+        {message.streaming && !message.content && !message.status && (
           <div className={styles.typingDots}>
             <span />
             <span />

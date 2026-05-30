@@ -66,3 +66,35 @@ def add_message(
     db.refresh(message)
     db.refresh(chat)
     return message
+
+
+def get_chat_by_id(db: Session, chat_id: UUID) -> Chat | None:
+    """Fetch a chat by ID without requiring user_id (for test/anonymous flows)."""
+    return db.scalar(select(Chat).where(Chat.id == chat_id))
+
+
+def get_chat_history_as_messages(db: Session, chat_id: UUID) -> list[dict]:
+    """
+    Fetch all messages for a chat and return them in LLM-ready format:
+    [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}, ...]
+    """
+    messages = list(
+        db.scalars(
+            select(Message).where(Message.chat_id == chat_id).order_by(Message.created_at)
+        )
+    )
+
+    history = [{"role": msg.role, "content": msg.content} for msg in messages]
+
+    print(f"\n📦 DB HISTORY for chat {chat_id}: {len(history)} messages loaded")
+    for i, h in enumerate(history):
+        preview = h["content"].replace("\n", " ")[:80]
+        print(f"   [{i}] {h['role'].upper()}: {preview}...")
+
+    return history
+
+
+def delete_chat(db: Session, chat: Chat) -> None:
+    """Delete a chat and all its messages (cascading)."""
+    db.delete(chat)
+    db.commit()

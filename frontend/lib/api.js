@@ -59,37 +59,58 @@ export async function fetchChatMessages(token, chatId) {
   return res.json();
 }
 
-export async function postMessage(token, chatId, role, content) {
+export async function deleteChat(token, chatId) {
   const res = await authFetch(
-    `/chats/${chatId}/messages`,
+    `/chats/${chatId}`,
+    { method: "DELETE" },
+    token
+  );
+  return res.json();
+}
+
+export async function renameChat(token, chatId, title) {
+  const res = await authFetch(
+    `/chats/${chatId}`,
     {
-      method: "POST",
-      body: JSON.stringify({ role, content }),
+      method: "PATCH",
+      body: JSON.stringify({ title }),
     },
     token
   );
   return res.json();
 }
 
-// ─── Streaming Search ────────────────────────────────────────
+// ─── Streaming Search (Authenticated SSE) ────────────────────
 
 /**
- * Stream a search query via SSE.
- * Calls the /stream endpoint and yields parsed SSE events.
+ * Stream a search query via SSE with authentication and chat context.
+ * The backend handles ALL message persistence — the frontend does NOT
+ * need to separately call postMessage after streaming.
  *
  * @param {string} query - The search query
- * @param {function} onEvent - Callback for each SSE event: { type, ...data }
+ * @param {function} onEvent - Callback for each SSE event: { eventType, ...data }
+ * @param {object} options
+ * @param {string} options.token - Supabase JWT for authenticated requests
+ * @param {string|null} options.chatId - Existing chat ID to continue conversation
+ * @param {AbortSignal} options.signal - AbortController signal to cancel the stream
  * @returns {Promise<void>}
  */
-export async function streamSearch(query, onEvent) {
+export async function streamSearch(query, onEvent, { token, chatId, signal } = {}) {
+  const headers = { "Content-Type": "application/json" };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API_URL}/stream`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ query, max_results: 5 }),
+    headers,
+    body: JSON.stringify({ query, max_results: 5, chat_id: chatId || null }),
+    signal,
   });
 
   if (!res.ok) {
-    throw new Error(`Stream error: ${res.status}`);
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || `Stream error: ${res.status}`);
   }
 
   const reader = res.body.getReader();

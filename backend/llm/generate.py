@@ -44,7 +44,7 @@ MODELS = [
 DEFAULT_MODEL = MODELS[0]
 
 
-def _build_messages(query: str, context: str) -> tuple[list[dict], str]:
+def _build_messages(query: str, context: str, history: list[dict] | None = None) -> tuple[list[dict], str]:
     """
     Build the chat messages array from query + context.
     Shared between streaming and non-streaming modes.
@@ -62,22 +62,37 @@ def _build_messages(query: str, context: str) -> tuple[list[dict], str]:
                 "NEVER use your parametric memory for real-time information. "
                 "If the search results don't contain the answer, say so explicitly."
             )
-        },
-        {
-            "role": "user",
-            "content": prompt
         }
     ]
+
+    # Inject raw chat memory
+    if history:
+        messages.extend(history)
+
+    # Append current query + context
+    messages.append({
+        "role": "user",
+        "content": prompt
+    })
+
+    # Visualize/log memory usage
+    print("\n" + "="*50)
+    print(f"🧠 MEMORY USAGE VISUALIZATION ({len(messages)} messages total)")
+    print("="*50)
+    for i, m in enumerate(messages):
+        preview = m['content'].replace("\n", " ")[:100]
+        print(f"[{i}] {m['role'].upper()}: {preview}...")
+    print("="*50 + "\n")
 
     return messages, current_date
 
 
-def generate_answer(query: str, context: str, model: str | None = None) -> str:
+def generate_answer(query: str, context: str, model: str | None = None, history: list[dict] | None = None) -> str:
     """
     Blocking call — returns the full answer as a string.
     Tries fallback models if the primary is rate-limited.
     """
-    messages, _ = _build_messages(query, context)
+    messages, _ = _build_messages(query, context, history=history)
     models_to_try = [model] if model else MODELS
 
     last_error = None
@@ -100,7 +115,7 @@ def generate_answer(query: str, context: str, model: str | None = None) -> str:
 
 
 def generate_answer_stream(
-    query: str, context: str, model: str | None = None
+    query: str, context: str, model: str | None = None, history: list[dict] | None = None
 ) -> Generator[str, None, None]:
     """
     Streaming call — yields tokens one-by-one as the LLM generates them.
@@ -113,7 +128,7 @@ def generate_answer_stream(
       4. We yield each fragment as it arrives — no waiting for the full response
       5. The caller (FastAPI SSE or CLI) decides how to format/send each token
     """
-    messages, _ = _build_messages(query, context)
+    messages, _ = _build_messages(query, context, history=history)
     models_to_try = [model] if model else MODELS
 
     last_error = None

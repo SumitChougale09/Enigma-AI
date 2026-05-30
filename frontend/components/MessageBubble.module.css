@@ -26,6 +26,11 @@
   flex-shrink: 0;
   margin-top: 2px;
 }
+.errorIcon {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: var(--danger);
+}
 
 .bubble {
   max-width: 720px;
@@ -53,6 +58,12 @@
 .content {
   font-size: 0.92rem;
   line-height: 1.7;
+}
+.errorContent {
+  color: var(--danger);
+}
+.errorContent p {
+  color: var(--danger) !important;
 }
 .content h1, .content h2, .content h3 {
   margin-top: 0.8em;
@@ -127,6 +138,17 @@
   border-radius: 50%;
   background: var(--accent);
   animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Streaming cursor */
+.streamCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: pulse-glow 1s ease-in-out infinite;
 }
 
 /* Typing dots */

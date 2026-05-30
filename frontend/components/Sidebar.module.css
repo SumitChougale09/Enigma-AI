@@ -156,38 +156,73 @@
   color: var(--text-muted);
   padding: 8px 8px 4px;
 }
+
+/* Chat item — wrapper for button + delete */
 .chatItem {
   display: flex;
   align-items: center;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s;
+  position: relative;
+}
+.chatItem:hover {
+  background: var(--bg-hover);
+}
+.chatItemActive {
+  background: var(--bg-active) !important;
+}
+
+.chatButton {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 8px 10px;
   background: transparent;
   border: none;
-  border-radius: var(--radius-sm);
   color: var(--text-secondary);
   font-size: 0.84rem;
   font-family: inherit;
   text-align: left;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: color 0.15s;
 }
-.chatItem:hover {
-  background: var(--bg-hover);
+.chatItem:hover .chatButton,
+.chatItemActive .chatButton {
   color: var(--text-primary);
 }
-.chatItemActive {
-  background: var(--bg-active) !important;
-  color: var(--text-primary) !important;
-}
+
 .chatIcon {
   flex-shrink: 0;
   opacity: 0.5;
 }
-.chatTitle {
+.chatTitleText {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Delete button */
+.deleteBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-right: 4px;
+  animation: fadeIn 0.15s ease-out;
+}
+.deleteBtn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
 }
 
 /* Footer */
